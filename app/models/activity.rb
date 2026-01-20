@@ -29,7 +29,8 @@ class Activity < ApplicationRecord
 
   def activate!
     raise "Activity already active" if active?
-    raise "Activity must have at least one task" if tasks.empty?
+    raise "No assignees defined" if assignees.empty?
+    # raise "Activity must have at least one task" if tasks.empty?
 
     Activities::TaskGenerator.new(self).generate!
     update!(status: :active)
@@ -37,5 +38,13 @@ class Activity < ApplicationRecord
 
   def next_assignee(index)
     assignees[index % assignees.size]
+  end
+
+  def assignee_for(index)
+    assignees[index % assignees.size]
+  end
+
+  def generate!
+    Activities::TaskGenerator.new(self).generate!
   end
 end

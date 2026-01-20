@@ -3,6 +3,6 @@ FactoryBot.define do
     association :activity
     status { "pending" }
     assigned_to { association :user }
-    due_on { Date.today + 1.day }
+    due_on { Time.current }
   end
 end

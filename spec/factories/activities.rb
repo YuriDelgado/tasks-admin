@@ -1,11 +1,11 @@
 FactoryBot.define do
   factory :activity do
     association :user
-    name { "Test Activity" }
+    name { "Mop the floor" }
     activity_type { :chore }
     status { :draft }
-    period { :day }
+    period { :week }
     frequency { 1 }
-    times_per_period { 1 }
+    times_per_period { 7 }
   end
 end
