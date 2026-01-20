@@ -56,9 +56,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_20_154948) do
     t.string "name"
     t.text "description"
     t.bigint "user_id", null: false
-    t.string "status"
-    t.string "period"
-    t.string "activity_type"
+    t.string "status", default: "draft", null: false
+    t.string "period", default: "day", null: false
+    t.string "activity_type", default: "chore", null: false
     t.integer "frequency"
     t.integer "times_per_period"
     t.integer "reward_stars"
@@ -92,7 +92,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_20_154948) do
   create_table "tasks", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.string "status", default: "pending", null: false
-    t.datetime "due_to"
+    t.datetime "due_on"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

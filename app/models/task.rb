@@ -1,6 +1,6 @@
 class Task < ApplicationRecord
   belongs_to :activity
-  belongs_to :assignee, class_name: "User"
+  belongs_to :assigned_to, class_name: "User"
 
   validates :due_on, presence: true
 
