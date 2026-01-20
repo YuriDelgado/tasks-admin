@@ -1,0 +1,58 @@
+<%= form_with(model: activity, builder: Railsui::FormBuilder) do |form| %>
+  <%= render "rui/shared/error_messages", resource: form.object %>
+
+  <div class="my-5">
+    <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": activity.errors[:name].none?, "border-red-400 focus:outline-red-600": activity.errors[:name].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.textarea :description, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": activity.errors[:description].none?, "border-red-400 focus:outline-red-600": activity.errors[:description].any?}] %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="my-5">
+      <%= form.select :activity_type, Activity.activity_types.keys.map { |activity_type| [activity_type.humanize, activity_type] }, { prompt: "Select Activity Type" }, { class: "form-select text-base" } %>
+    </div>
+
+    <div class="my-5">
+      <%= form.select :period, Activity.periods.keys.map { |period| [period.humanize, period] }, { prompt: "Select Period" }, { class: "form-select text-base" } %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="my-5">
+      <%= form.number_field :frequency, { class: "form-input" } %>
+    </div>
+
+    <div class="my-5">
+      <%= form.number_field :times_per_period, class: "form-input" %>
+    </div>
+  </div>
+
+  <div class="my-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <%= form.datetime_field :start_date, class: "form-input" %>
+    </div>
+    
+    <div>
+      <%= form.datetime_field :end_time, class: "form-input" %>
+    </div>
+  </div>
+
+  <div class="my-5 flex items-center space-x-4 form-group">
+    <%= form.select :status, Activity.statuses.keys.map { |status| [status.humanize, status] }, { prompt: "Select Status" }, { class: "form-select" } %>
+  </div>
+
+  <div class="my-5 flex flex-col-2">
+    <div class="block mt-1 mr-2">Reward Stars:</div>
+    <%= render StarRatingComponent.new(
+      name: "activity[reward_stars]",
+      value: activity.reward_stars
+      ) %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>

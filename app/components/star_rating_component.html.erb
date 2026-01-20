@@ -1,0 +1,25 @@
+<div class="flex flex-row-reverse justify-end">
+  <% (1..@max).to_a.reverse.each do |i| %>
+
+    <input
+      type="radio"
+      name="<%= @name %>"
+      value="<%= i %>"
+      id="<%= "#{@id_prefix}_#{i}" %>"
+      class="peer hidden"
+      <%= "checked" if @value == i %>
+    >
+
+    <label
+      for="<%= "#{@id_prefix}_#{i}" %>"
+      class="cursor-pointer text-3xl text-gray-300
+             peer-checked:text-yellow-400
+             peer-checked:~label:text-yellow-400
+             hover:text-yellow-400
+             hover:~label:text-yellow-400
+             transition-colors">
+      ★
+    </label>
+
+  <% end %>
+</div>

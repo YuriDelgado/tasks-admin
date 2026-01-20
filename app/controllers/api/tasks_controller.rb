@@ -1,0 +1,35 @@
+module Api
+  class TasksController < Api::BaseController
+    before_action :set_task, only: %i[ show transition ]
+
+    def index
+      @tasks = Task.all
+      render json: @tasks
+    end
+
+    def show
+      render json: @task
+    end
+
+    def transition
+      new_status = transition_params[:new_status]
+      role = transition_params[:role]
+
+      begin
+        @task.transition_to!(new_status, role: role)
+        render json: @task, notice: "Task status was successfully updated to #{new_status}."
+      rescue ArgumentError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+    end
+    private
+
+    def set_task
+      @task = Task.find(params[:id] || transition_params[:task_id])
+    end
+
+    def transition_params
+      params.permit(:task_id, :new_status, :role)
+    end
+  end
+end
