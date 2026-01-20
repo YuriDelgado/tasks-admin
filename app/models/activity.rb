@@ -1,6 +1,8 @@
 class Activity < ApplicationRecord
   belongs_to :user
   has_many :tasks, dependent: :destroy
+  has_many :activity_assignments, -> { order(:position) }, dependent: :destroy
+  has_many :assignees, through: :activity_assignments, source: :user
 
   validates :name, presence: true
   validates :period, presence: true
@@ -29,6 +31,11 @@ class Activity < ApplicationRecord
     raise "Activity already active" if active?
     raise "Activity must have at least one task" if tasks.empty?
 
+    Activities::TaskGenerator.new(self).generate!
     update!(status: :active)
+  end
+
+  def next_assignee(index)
+    assignees[index % assignees.size]
   end
 end

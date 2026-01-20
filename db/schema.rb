@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_20_154948) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_20_194304) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,16 +69,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_20_154948) do
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
-  create_table "activity_participants", force: :cascade do |t|
+  create_table "activity_assignments", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.bigint "user_id", null: false
-    t.integer "position", null: false
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["activity_id", "position"], name: "index_activity_participants_on_activity_id_and_position", unique: true
-    t.index ["activity_id", "user_id"], name: "index_activity_participants_on_activity_id_and_user_id", unique: true
-    t.index ["activity_id"], name: "index_activity_participants_on_activity_id"
-    t.index ["user_id"], name: "index_activity_participants_on_user_id"
+    t.index ["activity_id"], name: "index_activity_assignments_on_activity_id"
+    t.index ["user_id"], name: "index_activity_assignments_on_user_id"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -117,8 +115,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_20_154948) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activities", "users"
-  add_foreign_key "activity_participants", "activities"
-  add_foreign_key "activity_participants", "users"
+  add_foreign_key "activity_assignments", "activities"
+  add_foreign_key "activity_assignments", "users"
   add_foreign_key "tasks", "activities"
   add_foreign_key "tasks", "users", column: "assigned_to_id"
 end
