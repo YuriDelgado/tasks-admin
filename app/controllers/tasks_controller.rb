@@ -3,7 +3,7 @@ class TasksController < AuthenticatedController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    @tasks = current_account.tasks
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -60,7 +60,7 @@ class TasksController < AuthenticatedController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_task
-      @task = Task.find(params.expect(:id))
+      @task = current_account.tasks.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

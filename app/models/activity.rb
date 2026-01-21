@@ -1,5 +1,6 @@
 class Activity < ApplicationRecord
-  belongs_to :user
+  belongs_to :account
+  belongs_to :user # creator
   has_many :tasks, dependent: :destroy
   has_many :activity_assignments, -> { order(:position) }, dependent: :destroy
   has_many :assignees, through: :activity_assignments, source: :user

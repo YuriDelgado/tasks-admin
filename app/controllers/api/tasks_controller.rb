@@ -3,7 +3,7 @@ module Api
     before_action :set_task, only: %i[ show transition ]
 
     def index
-      @tasks = Task.all
+      @tasks = current_account.tasks
       render json: @tasks
     end
 
@@ -22,10 +22,11 @@ module Api
         render json: { error: e.message }, status: :unprocessable_entity
       end
     end
+
     private
 
     def set_task
-      @task = Task.find(params[:id] || transition_params[:task_id])
+      @task = current_account.tasks.find(params[:id] || transition_params[:task_id])
     end
 
     def transition_params

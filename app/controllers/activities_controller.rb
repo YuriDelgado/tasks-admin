@@ -3,7 +3,7 @@ class ActivitiesController < AuthenticatedController
 
   # GET /activities or /activities.json
   def index
-    @activities = Activity.all
+    @activities = current_account.activities
   end
 
   # GET /activities/1 or /activities/1.json
@@ -21,29 +21,22 @@ class ActivitiesController < AuthenticatedController
 
   # POST /activities or /activities.json
   def create
-    @activity = Activity.new(activity_params)
+    @activity = current_account.activities.new(activity_params)
+    @activity.user = current_user
 
-    respond_to do |format|
-      if @activity.save
-        format.html { redirect_to @activity, notice: "Activity was successfully created." }
-        format.json { render :show, status: :created, location: @activity }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @activity.errors, status: :unprocessable_entity }
-      end
+    if @activity.save
+      redirect_to @activity, notice: "Activity was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /activities/1 or /activities/1.json
   def update
-    respond_to do |format|
-      if @activity.update(activity_params)
-        format.html { redirect_to @activity, notice: "Activity was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @activity }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @activity.errors, status: :unprocessable_entity }
-      end
+    if @activity.update(activity_params)
+      redirect_to @activity, notice: "Activity was successfully updated.", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -51,16 +44,13 @@ class ActivitiesController < AuthenticatedController
   def destroy
     @activity.destroy!
 
-    respond_to do |format|
-      format.html { redirect_to activities_path, notice: "Activity was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to activities_path, notice: "Activity was successfully destroyed.", status: :see_other
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_activity
-      @activity = Activity.find(params.expect(:id))
+      @activity = current_account.activities.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
