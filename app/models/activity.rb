@@ -8,6 +8,8 @@ class Activity < ApplicationRecord
   validates :period, presence: true
   validates :frequency, numericality: { greater_than: 0 }
   validates :times_per_period, numericality: { greater_than: 0 }
+  validate :valid_status_transition, on: :update
+  validate :cannot_add_tasks_if_active, on: :update
 
   enum :status, {
     draft: "draft",
@@ -46,5 +48,37 @@ class Activity < ApplicationRecord
 
   def generate!
     Activities::TaskGenerator.new(self).generate!
+  end
+
+  def archive!
+    raise "Only active activities can be archived" unless active?
+
+    archived!
+  end
+
+  private
+
+  def valid_status_transition
+    return unless status_changed?
+
+    from, to = status_change
+
+    allowed = case from
+    when "draft"    then %w[active]
+    when "active"   then %w[archived]
+    when "archived" then []
+    else []
+    end
+
+    return if allowed.include?(to)
+
+    errors.add(:status, "cannot transition from #{from} to #{to}")
+  end
+
+  def cannot_add_tasks_if_active
+    return unless active?
+    return unless tasks.any?(&:new_record?)
+
+    errors.add(:tasks, "cannot be added once the activity is active")
   end
 end

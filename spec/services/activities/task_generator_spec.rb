@@ -1,3 +1,4 @@
+require 'rails_helper'
 RSpec.describe Activities::TaskGenerator do
   let(:activity) { create(:activity) }
   let(:user1) { create(:user) }
@@ -13,15 +14,16 @@ RSpec.describe Activities::TaskGenerator do
       described_class.new(activity).generate!
     }.to change(Task, :count).by(7)
 
-    tasks = activity.tasks.order(:due_date)
+    tasks = activity.tasks.order(:due_on)
 
-    expect(tasks.map(&:assignee)).to eq([
+    expect(tasks.map(&:assigned_to)).to eq([
       user1, user2, user1, user2, user1, user2, user1
     ])
   end
 
   it "raises an error if no assignees exist" do
     expect {
+      activity.assignees.clear
       described_class.new(activity).generate!
     }.to raise_error("No assignees defined")
   end

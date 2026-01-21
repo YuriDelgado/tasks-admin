@@ -12,7 +12,7 @@ class Activities::TaskGenerator
       Task.create!(
         activity: @activity,
         assigned_to: assignees[i % assignees.size],
-        due_on: due_date_for(i),
+        due_on: due_on_for(i),
         status: :pending
       )
     end
@@ -20,7 +20,7 @@ class Activities::TaskGenerator
 
   private
 
-  def due_date_for(index)
+  def due_on_for(index)
     case @activity.period
     when "week"
       @start_date.beginning_of_week + index.days

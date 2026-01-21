@@ -2,7 +2,10 @@ class Task < ApplicationRecord
   belongs_to :activity
   belongs_to :assigned_to, class_name: "User"
 
-  validates :due_on, presence: true
+  # validates :due_on, presence: true
+  validate :immutable_fields_when_activity_active, on: :update
+
+  before_destroy :prevent_destroy_if_activity_active
 
   enum :status, {
     pending:   "pending",
@@ -44,5 +47,30 @@ class Task < ApplicationRecord
       status: new_status,
       completed_at: (Time.current if new_status.to_sym == :completed)
     )
+  end
+
+  private
+
+  def immutable_fields_when_activity_active
+    return unless activity&.active?
+
+    immutable_fields = %i[
+      activity_id
+      assigned_to_id
+      due_on
+    ]
+
+    immutable_fields.each do |field|
+      if will_save_change_to_attribute?(field)
+        errors.add(field, "cannot be changed once the activity is active")
+      end
+    end
+  end
+
+  def prevent_destroy_if_activity_active
+    return unless activity&.active?
+
+    errors.add(:base, "tasks cannot be removed once the activity is active")
+    throw(:abort)
   end
 end
