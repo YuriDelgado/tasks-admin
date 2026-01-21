@@ -10,6 +10,7 @@ class Activity < ApplicationRecord
   validates :times_per_period, numericality: { greater_than: 0 }
   validate :valid_status_transition, on: :update
   validate :cannot_add_tasks_if_active, on: :update
+  # validate :activity_must_be_active
 
   enum :status, {
     draft: "draft",
@@ -80,5 +81,11 @@ class Activity < ApplicationRecord
     return unless tasks.any?(&:new_record?)
 
     errors.add(:tasks, "cannot be added once the activity is active")
+  end
+
+  def activity_must_be_active
+    return if task.activity.active?
+
+    errors.add(:base, "Cannot override task from inactive activity")
   end
 end

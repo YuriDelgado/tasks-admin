@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ActivityAssignment, type: :model do
+describe ActivityAssignment, type: :model do
   subject { build(:activity_assignment) }
   it { should belong_to(:activity) }
   it { should belong_to(:user) }

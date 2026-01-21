@@ -1,4 +1,5 @@
-RSpec.describe Activity, type: :model do
+require 'rails_helper'
+describe Activity, type: :model do
   let(:activity) { create(:activity) }
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }

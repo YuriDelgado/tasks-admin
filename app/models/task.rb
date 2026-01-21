@@ -1,6 +1,7 @@
 class Task < ApplicationRecord
   belongs_to :activity
   belongs_to :assigned_to, class_name: "User"
+  has_one :task_override, dependent: :destroy
 
   # validates :due_on, presence: true
   validate :immutable_fields_when_activity_active, on: :update
@@ -47,6 +48,14 @@ class Task < ApplicationRecord
       status: new_status,
       completed_at: (Time.current if new_status.to_sym == :completed)
     )
+  end
+
+  def effective_assigned_to
+    task_override&.assigned_to || assigned_to
+  end
+
+  def effective_due_on
+    task_override&.due_on || due_on
   end
 
   private

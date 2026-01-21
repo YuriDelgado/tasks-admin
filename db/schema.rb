@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_20_194304) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_21_153539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -87,6 +87,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_20_194304) do
     t.index ["jti"], name: "index_jwt_denylists_on_jti"
   end
 
+  create_table "task_overrides", force: :cascade do |t|
+    t.bigint "task_id", null: false
+    t.bigint "assigned_to_id"
+    t.bigint "overridden_by_id"
+    t.date "due_on"
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_to_id"], name: "index_task_overrides_on_assigned_to_id"
+    t.index ["overridden_by_id"], name: "index_task_overrides_on_overridden_by_id"
+    t.index ["task_id"], name: "index_task_overrides_on_task_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.string "status", default: "pending", null: false
@@ -117,6 +130,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_20_194304) do
   add_foreign_key "activities", "users"
   add_foreign_key "activity_assignments", "activities"
   add_foreign_key "activity_assignments", "users"
+  add_foreign_key "task_overrides", "tasks"
+  add_foreign_key "task_overrides", "users", column: "assigned_to_id"
+  add_foreign_key "task_overrides", "users", column: "overridden_by_id"
   add_foreign_key "tasks", "activities"
   add_foreign_key "tasks", "users", column: "assigned_to_id"
 end

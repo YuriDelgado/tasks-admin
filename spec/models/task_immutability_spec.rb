@@ -1,5 +1,5 @@
 require 'rails_helper'
-RSpec.describe Task, type: :model do
+describe Task, type: :model do
   let(:activity) { create(:activity, status: :active) }
   let(:task) { create(:task, activity: activity) }
 

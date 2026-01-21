@@ -1,5 +1,5 @@
 require 'rails_helper'
-RSpec.describe Activity, type: :model do
+describe Activity, type: :model do
   let(:activity) { create(:activity) }
   let(:user) { create(:user) }
 
