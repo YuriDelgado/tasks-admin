@@ -1,16 +1,17 @@
 require 'rails_helper'
 describe Activity, type: :model do
   let(:activity) { create(:activity) }
-  let(:user) { create(:user) }
 
   context "when valid" do
     before do
-      create(:activity_assignment, activity:, user:, position: 1)
+      activity.user.parent!
+      create(:activity_assignment, activity: activity, user: activity.user, position: 1)
+      activity.generate!
     end
 
     it "generates tasks and activates the activity" do
       expect {
-        activity.activate!
+      activity.activate!
       }.to change(Task, :count).by(activity.times_per_period)
 
       expect(activity.reload).to be_active

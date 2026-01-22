@@ -5,7 +5,7 @@ describe Task, type: :model do
 
   it "prevents changing due_on" do
     expect {
-      task.update!(due_on: 1.days.from_now)
+      task.update!(due_on: 1.day.from_now)
     }.to raise_error(ActiveRecord::RecordInvalid)
   end
 
@@ -17,7 +17,7 @@ describe Task, type: :model do
 
   it "allows completing the task" do
     expect {
-      task.update!(completed_at: Time.current)
+      task.completed!
     }.not_to raise_error
   end
 

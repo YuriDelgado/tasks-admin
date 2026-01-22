@@ -5,6 +5,8 @@ class Activities::TaskGenerator
   end
 
   def generate!
+    raise "Forbidden" unless ActivityPolicy.new(@activity.user, @activity).update?
+
     assignees = @activity.assignees
     raise "No assignees defined" if assignees.empty?
 

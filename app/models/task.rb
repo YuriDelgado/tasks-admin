@@ -14,7 +14,7 @@ class Task < ApplicationRecord
     approved:  "approved",
     rejected:  "rejected",
     canceled:  "canceled"
-  }, prefix: true
+  }
 
   ALLOWED_TRANSITIONS = {
     pending:   [ :completed ],

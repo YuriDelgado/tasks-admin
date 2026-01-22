@@ -13,14 +13,14 @@ module Api
 
     def transition
       new_status = transition_params[:new_status]
-      role = transition_params[:role]
+      policy = TaskPolicy.new(current_user, @task)
 
-      begin
-        @task.transition_to!(new_status, role: role)
-        render json: @task, notice: "Task status was successfully updated to #{new_status}."
-      rescue ArgumentError => e
-        render json: { error: e.message }, status: :unprocessable_entity
+      unless policy.public_send("#{new_status}?")
+        return render json: { error: "Forbidden" }, status: :forbidden
       end
+
+      @task.transition_to!(new_status)
+      render json: @task
     end
 
     private

@@ -10,8 +10,8 @@ class Activity < ApplicationRecord
   validates :frequency, numericality: { greater_than: 0 }
   validates :times_per_period, numericality: { greater_than: 0 }
   validate :valid_status_transition, on: :update
-  validate :cannot_add_tasks_if_active, on: :update
-  # validate :activity_must_be_active
+  # validate :cannot_add_tasks_if_active, on: :update
+  validate :immutable_fields_when_activity_active, on: :update
 
   enum :status, {
     draft: "draft",
@@ -34,7 +34,7 @@ class Activity < ApplicationRecord
   def activate!
     raise "Activity already active" if active?
     raise "No assignees defined" if assignees.empty?
-    # raise "Activity must have at least one task" if tasks.empty?
+    raise "Activity must have at least one task" if tasks.empty?
 
     Activities::TaskGenerator.new(self).generate!
     update!(status: :active)
@@ -88,5 +88,21 @@ class Activity < ApplicationRecord
     return if task.activity.active?
 
     errors.add(:base, "Cannot override task from inactive activity")
+  end
+
+  def immutable_fields_when_activity_active
+    return unless active?
+
+    immutable_fields = %i[
+      period
+      frequency
+      times_per_period
+    ]
+
+    immutable_fields.each do |field|
+      if will_save_change_to_attribute?(field)
+        errors.add(field, "cannot be changed once the activity is active")
+      end
+    end
   end
 end

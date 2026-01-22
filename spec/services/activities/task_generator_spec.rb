@@ -1,6 +1,7 @@
 require 'rails_helper'
 RSpec.describe Activities::TaskGenerator do
-  let(:activity) { create(:activity) }
+  let(:user) { create(:user, role: :parent) }
+  let(:activity) { create(:activity, user: user, account: user.account) }
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
 

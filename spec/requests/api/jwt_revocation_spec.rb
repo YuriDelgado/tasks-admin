@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "JWT revocation", type: :request do
-  let!(:user) { create(:user, email: "admin@example.com", password: "123456") }
-  let!(:task) { create(:task) }
+  let!(:user) { create(:user, email: "admin@example.com", password: "123456", role: "parent") }
+  let!(:activity) { create(:activity, user: user, status: "active") }
 
   let(:login_headers) do
     { "Content-Type" => "application/json" }
@@ -38,7 +38,7 @@ RSpec.describe "JWT revocation", type: :request do
 
   it "revokes the token on logout" do
     # 1️⃣ token works
-    get "/api/tasks/#{task.id}", headers: auth_headers
+    get "/api/tasks", headers: auth_headers
     expect(response).to have_http_status(:ok)
 
     # 2️⃣ logout WITH token
@@ -46,7 +46,7 @@ RSpec.describe "JWT revocation", type: :request do
     expect(response).to have_http_status(:no_content)
     # 3️⃣ same token must fail
 
-    get "/api/tasks/#{task.id}", headers: auth_headers
+    get "/api/tasks", headers: auth_headers
     expect(response).to have_http_status(:unauthorized)
   end
 end
