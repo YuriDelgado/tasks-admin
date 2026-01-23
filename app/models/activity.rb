@@ -10,7 +10,7 @@ class Activity < ApplicationRecord
   validates :frequency, numericality: { greater_than: 0 }
   validates :times_per_period, numericality: { greater_than: 0 }
   validate :valid_status_transition, on: :update
-  # validate :cannot_add_tasks_if_active, on: :update
+  validate :cannot_add_tasks_if_active, on: :update
   validate :immutable_fields_when_activity_active, on: :update
 
   enum :status, {
@@ -40,9 +40,9 @@ class Activity < ApplicationRecord
     update!(status: :active)
   end
 
-  def next_assignee(index)
-    assignees[index % assignees.size]
-  end
+  # def next_assignee(index)
+  #   assignees[index % assignees.size]
+  # end
 
   def assignee_for(index)
     assignees[index % assignees.size]
@@ -56,6 +56,25 @@ class Activity < ApplicationRecord
     raise "Only active activities can be archived" unless active?
 
     archived!
+  end
+
+  def next_assignee
+    raise "No assignees defined" if activity_assignments.empty?
+
+    last_task = tasks.order(created_at: :desc).first
+
+    return activity_assignments.first.user unless last_task
+
+    assignments = activity_assignments.to_a
+
+    last_index = assignments.index do |assignment|
+      assignment.user_id == last_task.assigned_to_id
+    end
+    # Safety fallback (override/manual assignment)
+    return assignments.first.user if last_index.nil?
+
+    next_assignment = assignments[last_index + 1] || assignments.first
+    next_assignment.user
   end
 
   private

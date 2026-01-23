@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_21_173832) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_22_205326) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -80,7 +80,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_21_173832) do
   create_table "activity_assignments", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.bigint "user_id", null: false
-    t.integer "position"
+    t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["activity_id"], name: "index_activity_assignments_on_activity_id"
