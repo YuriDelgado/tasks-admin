@@ -77,6 +77,23 @@ class Activity < ApplicationRecord
     next_assignment.user
   end
 
+  def generate_tasks!(from:, to:)
+    raise "Activity must be active" unless active?
+    raise "No assignees defined" if activity_assignments.empty?
+
+    dates = generation_dates(from:, to:)
+
+    dates.each do |date|
+      next if tasks.exists?(due_on: date)
+
+      Task.create!(
+        activity: self,
+        assigned_to: next_assignee,
+        due_on: date
+      )
+    end
+  end
+
   private
 
   def valid_status_transition
@@ -122,6 +139,35 @@ class Activity < ApplicationRecord
       if will_save_change_to_attribute?(field)
         errors.add(field, "cannot be changed once the activity is active")
       end
+    end
+  end
+
+  def generation_dates(from:, to:)
+    case period.to_sym
+    when :day
+      (from..to).to_a
+    when :week
+      generate_weekly_dates(from, to)
+    when :month
+      generate_monthly_dates(from, to)
+    else
+      raise "Unknown period"
+    end
+  end
+
+  def generate_weekly_dates(from, to)
+    weeks = (from..to).group_by(&:cweek)
+
+    weeks.flat_map do |_week, days|
+      days.first(times_per_period)
+    end
+  end
+
+  def generate_monthly_dates(from, to)
+    months = (from..to).group_by { |d| [ d.year, d.month ] }
+
+    months.flat_map do |_month, days|
+      days.first(times_per_period)
     end
   end
 end
