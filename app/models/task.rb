@@ -7,6 +7,8 @@ class Task < ApplicationRecord
   validate :immutable_fields_when_activity_active, on: :update
 
   before_destroy :prevent_destroy_if_activity_active
+  before_update :prevent_changes_if_overridden
+  before_destroy :prevent_destroy_if_overridden
 
   enum :status, {
     pending:   "pending",
@@ -81,5 +83,19 @@ class Task < ApplicationRecord
 
     errors.add(:base, "tasks cannot be removed once the activity is active")
     throw(:abort)
+  end
+
+  def prevent_changes_if_overridden
+    if task_override.present?
+      errors.add(:base, "Task is overridden and cannot be changed")
+      throw(:abort)
+    end
+  end
+
+  def prevent_destroy_if_overridden
+    if task_override.present?
+      errors.add(:base, "Task is overridden and cannot be destroyed")
+      throw(:abort)
+    end
   end
 end

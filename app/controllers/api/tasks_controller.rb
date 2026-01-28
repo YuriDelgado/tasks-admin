@@ -26,7 +26,7 @@ module Api
     private
 
     def set_task
-      @task = current_account.tasks.find(params[:id] || transition_params[:task_id])
+      @task = current_account.tasks.find(params[:id] || params[:task_id])
     end
 
     def transition_params

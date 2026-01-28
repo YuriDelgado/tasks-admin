@@ -34,7 +34,8 @@ RSpec.describe Tasks::Override do
       described_class.call(
         task: task,
         actor: parent,
-        due_on: Date.tomorrow
+        due_on: Date.tomorrow,
+        reason: "no reason"
       )
 
       expect(existing.reload.due_on).to eq(Date.tomorrow)
