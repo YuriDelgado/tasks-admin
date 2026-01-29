@@ -5,7 +5,7 @@ describe Task, type: :model do
     let(:task) { create(:task) }
     let(:other_user) { create(:user) }
     it "returns override when present" do
-      override = create(:task_override, task: task, assigned_to: other_user)
+      create(:task_override, task: task, assigned_to: other_user)
       expect(task.effective_assigned_to).to eq(other_user)
     end
   end

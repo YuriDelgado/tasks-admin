@@ -2,7 +2,7 @@ require 'rails_helper'
 RSpec.describe Tasks::Override do
   let(:activity) { create(:activity, status: :active) }
   let(:task) { create(:task, activity: activity) }
-  let(:parent) { create(:user, role: :parent) }
+  let(:parent) { create(:user, account: task.activity.account, role: :parent) }
   let(:child) { create(:user, role: :child) }
 
   context "authorization" do

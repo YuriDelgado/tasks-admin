@@ -10,8 +10,13 @@ class User < ApplicationRecord
          jwt_revocation_strategy: JwtDenylist
 
   enum :role, {
-    admin:  "admin",
+    child:  "child",
     parent: "parent",
-    child:  "child"
+    admin:  "admin",
+    system: "system"
   }
+
+  def manager?
+    parent? || admin? || system?
+  end
 end
