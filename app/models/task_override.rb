@@ -6,6 +6,7 @@ class TaskOverride < ApplicationRecord
   validates :reason, presence: true
   validate :at_least_one_override_present
   validate :authorized_override
+  validates :task_id, uniqueness: true
 
   private
 
