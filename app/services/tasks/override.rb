@@ -34,9 +34,7 @@ module Tasks
     attr_reader :task, :actor, :assigned_to, :due_on, :reason
 
     def authorize!
-      return if actor.admin? || actor.parent?
-
-      raise UnauthorizedError, "User cannot override tasks"
+      raise UnauthorizedError unless TaskOverridePolicy.new(@actor, @task).allow?
     end
 
     def validate!

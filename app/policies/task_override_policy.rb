@@ -13,7 +13,7 @@ class TaskOverridePolicy
   end
 
   def same_account?
-    @user.account_id == @task.activity.account_id
+    @user&.account_id == @task.activity.account_id
   end
 
   def task_completed_and_approved?
