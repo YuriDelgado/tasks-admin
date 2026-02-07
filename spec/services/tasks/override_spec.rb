@@ -4,11 +4,12 @@ RSpec.describe Tasks::Override do
   let(:task) { create(:task, activity: activity) }
   let(:parent) { create(:user, account: task.activity.account, role: :parent) }
   let(:child) { create(:user, role: :child) }
+  let(:activity_override) { create(:activity_override, activity:) }
 
   context "authorization" do
     it "blocks non-privileged users" do
       expect {
-        described_class.call(task: task, actor: child, due_on: Date.tomorrow)
+        described_class.call(task:, activity_override:, actor: child, due_on: Date.tomorrow)
       }.to raise_error(UnauthorizedError)
     end
   end
@@ -16,7 +17,8 @@ RSpec.describe Tasks::Override do
   context "override creation" do
     it "creates an override" do
       override = described_class.call(
-        task: task,
+        task:,
+        activity_override:,
         actor: parent,
         due_on: Date.tomorrow,
         reason: "Sick"
@@ -32,7 +34,8 @@ RSpec.describe Tasks::Override do
       existing = create(:task_override, task: task, due_on: Date.today)
 
       described_class.call(
-        task: task,
+        task:,
+        activity_override:,
         actor: parent,
         due_on: Date.tomorrow,
         reason: "no reason"

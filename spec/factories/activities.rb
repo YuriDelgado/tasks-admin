@@ -1,11 +1,8 @@
 FactoryBot.define do
   factory :activity do
-    transient do
-      activity_account { create(:account) }
-    end
+    association :account
 
-    account { activity_account }
-    user    { create(:user, account: activity_account) }
+    user { association :user, account: account }
 
     name { "Mop the floor" }
     activity_type { :chore }

@@ -4,8 +4,9 @@ module Tasks
       new(...).call
     end
 
-    def initialize(task:, actor:, assigned_to: nil, due_on: nil, reason: nil)
+    def initialize(task:, activity_override:, actor:, assigned_to: nil, due_on: nil, reason: nil)
       @task = task
+      @activity_override = activity_override
       @actor = actor
       @assigned_to = assigned_to
       @due_on = due_on

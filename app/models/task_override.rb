@@ -2,11 +2,30 @@ class TaskOverride < ApplicationRecord
   belongs_to :task, required: true
   belongs_to :assigned_to, class_name: "User", optional: true
   belongs_to :overridden_by, class_name: "User", required: true
+  belongs_to :activity_override, optional: true
 
   validates :reason, presence: true
   validate :at_least_one_override_present
   validate :authorized_override
   validates :task_id, uniqueness: true
+
+  def self.upsert_for!(task:, assigned_to:, created_by:, reason:, activity_override: nil)
+    override = find_or_initialize_by(task: task)
+
+    override.assign_attributes(
+      assigned_to: assigned_to,
+      overridden_by: created_by,
+      reason: reason,
+      activity_override: activity_override
+    )
+
+    override.save!
+    override
+  end
+
+  def account_id
+    task.activity.account_id
+  end
 
   private
 

@@ -4,6 +4,7 @@ describe TaskOverridePolicy do
   let(:account) { create(:account) }
   let(:activity) { create(:activity, account:) }
   let(:task) { create(:task, activity: activity) }
+  let(:override) { build(:task_override, task: task) }
 
   context "as child" do
     let(:child)  { create(:user, role: :child, account:) }

@@ -40,9 +40,9 @@ class Activity < ApplicationRecord
     update!(status: :active)
   end
 
-  # def next_assignee(index)
-  #   assignees[index % assignees.size]
-  # end
+  def next_assignee(index)
+    assignees[index % assignees.size]
+  end
 
   def assignee_for(index)
     assignees[index % assignees.size]

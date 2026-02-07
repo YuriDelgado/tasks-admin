@@ -18,8 +18,12 @@ class ApplicationPolicy
     user.child?
   end
 
+  def user_manager?
+    user.manager?
+  end
+
   def same_account?
     record.respond_to?(:account_id) &&
-      record.account_id == user.account_id
+      record.account_id == user&.account_id
   end
 end

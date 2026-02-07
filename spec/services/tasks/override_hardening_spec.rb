@@ -4,6 +4,7 @@ RSpec.describe Tasks::Override do
   subject(:call_service) do
     described_class.call(
       task: task,
+      activity_override:,
       actor: actor,
       assigned_to: assigned_to,
       due_on: due_on,
@@ -14,12 +15,13 @@ RSpec.describe Tasks::Override do
   let(:account) { create(:account) }
   let(:activity) { create(:activity, account: account, status: :active) }
   let(:task) { create(:task, activity: activity) }
+  let(:activity_override) { create(:activity_override, activity:) }
 
   let(:assigned_to) { nil }
   let(:due_on) { nil }
   let(:reason) { "Manual override" }
 
-    context "when authorized and no override exists" do
+  context "when authorized and no override exists" do
     let(:actor) { create(:user, account: account, role: :parent) }
     let(:assigned_to) { create(:user, account: account) }
 

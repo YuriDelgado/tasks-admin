@@ -27,10 +27,4 @@ class TaskPolicy < ApplicationPolicy
   def destroy?
     false # tasks are immutable once created
   end
-
-  private
-
-    def same_account?
-      record.activity.account_id == user.account_id
-    end
 end

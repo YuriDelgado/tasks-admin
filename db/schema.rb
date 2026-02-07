@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_22_205326) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_30_232104) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -87,6 +87,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_205326) do
     t.index ["user_id"], name: "index_activity_assignments_on_user_id"
   end
 
+  create_table "activity_overrides", force: :cascade do |t|
+    t.bigint "activity_id", null: false
+    t.bigint "assigned_to_id", null: false
+    t.bigint "created_by_id", null: false
+    t.date "date_from", null: false
+    t.date "date_to", null: false
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id", "date_from", "date_to"], name: "index_activity_overrides_on_activity_and_range"
+    t.index ["activity_id"], name: "index_activity_overrides_on_activity_id"
+    t.index ["assigned_to_id"], name: "index_activity_overrides_on_assigned_to_id"
+    t.index ["created_by_id"], name: "index_activity_overrides_on_created_by_id"
+  end
+
   create_table "jwt_denylists", force: :cascade do |t|
     t.string "jti"
     t.datetime "exp"
@@ -103,6 +118,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_205326) do
     t.string "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "activity_override_id", null: false
+    t.index ["activity_override_id"], name: "index_task_overrides_on_activity_override_id"
     t.index ["assigned_to_id"], name: "index_task_overrides_on_assigned_to_id"
     t.index ["overridden_by_id"], name: "index_task_overrides_on_overridden_by_id"
     t.index ["task_id"], name: "index_task_overrides_on_task_id"
@@ -143,6 +160,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_205326) do
   add_foreign_key "activities", "users"
   add_foreign_key "activity_assignments", "activities"
   add_foreign_key "activity_assignments", "users"
+  add_foreign_key "activity_overrides", "activities"
+  add_foreign_key "activity_overrides", "users", column: "assigned_to_id"
+  add_foreign_key "activity_overrides", "users", column: "created_by_id"
+  add_foreign_key "task_overrides", "activity_overrides"
   add_foreign_key "task_overrides", "tasks"
   add_foreign_key "task_overrides", "users", column: "assigned_to_id"
   add_foreign_key "task_overrides", "users", column: "overridden_by_id"

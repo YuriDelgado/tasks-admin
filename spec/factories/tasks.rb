@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :task do
     association :activity
     status { "pending" }
-    assigned_to { association :user }
-    due_on { Time.current }
+    assigned_to { activity.user }
+    due_on { Date.today }
   end
 end

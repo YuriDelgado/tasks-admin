@@ -60,6 +60,9 @@ class Task < ApplicationRecord
     task_override&.due_on || due_on
   end
 
+  def account_id
+    activity.account_id
+  end
   private
 
   def immutable_fields_when_activity_active

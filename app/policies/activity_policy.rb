@@ -1,18 +1,18 @@
 class ActivityPolicy < ApplicationPolicy
   def create?
-    admin? || parent?
+    user_manager?
   end
 
   def update?
-    same_account? && (admin? || parent?)
+    same_account? && user_manager?
   end
 
   def activate?
-    same_account? && (admin? || parent?)
+    same_account? && user_manager?
   end
 
   def archive?
-    same_account? && (admin? || parent?)
+    same_account? && user_manager?
   end
 
   def show?

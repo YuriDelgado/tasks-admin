@@ -17,6 +17,8 @@ FactoryBot.define do
       )
     end
 
+    activity_override
+
     due_on { Date.today }
     reason { "Manual adjustment" }
   end
