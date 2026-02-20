@@ -311,13 +311,25 @@ Devise.setup do |config|
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
   config.jwt do |jwt|
-    jwt.secret = Rails.application.credentials.devise_jwt_secret_key!
+    jwt.secret = ENV["DEVISE_JWT_SECRET_KEY"] || Rails.application.credentials.devise_jwt_secret_key
+
+    # Allow missing secret during asset precompilation
+    if jwt.secret.blank?
+      is_assets_precompile =
+        defined?(Rake) &&
+        Rake.application.top_level_tasks.include?("assets:precompile")
+
+      raise "DEVISE_JWT_SECRET_KEY is missing" if Rails.env.production? && !is_assets_precompile
+    end
+
     jwt.dispatch_requests = [
       [ "POST", %r{^/api/login$} ]
     ]
+
     jwt.revocation_requests = [
       [ "DELETE", %r{^/api/logout$} ]
     ]
+
     jwt.expiration_time = 1.day.to_i
   end
 end

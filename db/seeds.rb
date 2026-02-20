@@ -8,18 +8,17 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-User.create(email: "admin@example.com", password: "123456")
-User.create(email: "yuri@example.com", password: "123456")
-User.create(email: "angel@example.com", password: "123456")
-User.create(email: "david@example.com", password: "123456")
-User.create(email: "marlene@example.com", password: "123456")
-User.create(email: "tete@example.com", password: "123456")
+user = User.create(email: "admin@example.com", password: "123456", role: "admin")
+User.create(email: "yuri@example.com", password: "123456", role: "parent")
+User.create(email: "angel@example.com", password: "123456", role: "child")
+User.create(email: "david@example.com", password: "123456", role: "child")
+User.create(email: "marlene@example.com", password: "123456", role: "parent")
+User.create(email: "tete@example.com", password: "123456", role: "parent")
 
 5.times do |i|
-  Activity.create(
+  user.activities.create(
     name: "Sample Activity #{i + 1}",
     description: "This is a description for Sample Activity #{i + 1}.",
-    user_id: User.first.id,
     status: "draft",
     activity_type: [ "chore", "habit", "maintenance" ].sample,
     frequency: rand([ 1, 2, 4 ].sample),
