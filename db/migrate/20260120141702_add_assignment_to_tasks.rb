@@ -5,6 +5,5 @@ class AddAssignmentToTasks < ActiveRecord::Migration[8.0]
 
     add_index :tasks, :assigned_to_id
     add_foreign_key :tasks, :users, column: :assigned_to_id
-
   end
 end

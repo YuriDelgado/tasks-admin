@@ -30,7 +30,7 @@ module Api
     end
 
     def transition_params
-      params.permit(:task_id, :new_status, :role)
+      params.permit(:task_id, :new_status)
     end
   end
 end
