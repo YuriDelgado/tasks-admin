@@ -1,0 +1,49 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/tasks-admin:latest \
+            --push .
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/tasks-admin:latest
+            docker stop tasks-admin || true
+            docker rm tasks-admin || true
+            docker run -d \
+              --name tasks-admin \
+              --restart unless-stopped \
+              -e RAILS_ENV=production \
+              -e RAILS_SERVE_STATIC_FILES=true \
+              -e SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }} \
+              -p 3000:3000 \
+              ${{ secrets.DOCKERHUB_USERNAME }}/tasks-admin:latest
