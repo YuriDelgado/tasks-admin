@@ -46,7 +46,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # devise for authentication
-gem "devise", "~> 4.2"
+gem "devise", "~> 5.0"
 gem "devise-jwt"
 
 # view comoponents
