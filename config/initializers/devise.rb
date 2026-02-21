@@ -316,7 +316,7 @@ Devise.setup do |config|
     # Allow missing secret during asset precompilation
     if jwt.secret.blank?
       is_assets_precompile =
-        defined?(Rake) &&
+        defined?(Rake) && defined?(Rake.application) &&
         Rake.application.top_level_tasks.include?("assets:precompile")
 
       raise "DEVISE_JWT_SECRET_KEY is missing" if Rails.env.production? && !is_assets_precompile

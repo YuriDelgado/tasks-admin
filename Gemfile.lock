@@ -78,6 +78,7 @@ GEM
     base64 (0.3.0)
     bcrypt (3.1.21)
     bcrypt_pbkdf (1.1.2)
+    bcrypt_pbkdf (1.1.2-arm64-darwin)
     benchmark (0.5.0)
     bigdecimal (4.0.1)
     bindex (0.8.1)
@@ -440,6 +441,7 @@ GEM
 PLATFORMS
   aarch64-linux
   arm64-darwin-23
+  arm64-darwin-25
   x86_64-linux
 
 DEPENDENCIES
