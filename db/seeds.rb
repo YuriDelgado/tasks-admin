@@ -7,16 +7,16 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-
-user = User.create(email: "admin@example.com", password: "123456", role: "admin")
-User.create(email: "yuri@example.com", password: "123456", role: "parent")
-User.create(email: "angel@example.com", password: "123456", role: "child")
-User.create(email: "david@example.com", password: "123456", role: "child")
-User.create(email: "marlene@example.com", password: "123456", role: "parent")
-User.create(email: "tete@example.com", password: "123456", role: "parent")
+account = Account.first_or_create(name: "Default Account")
+user = User.create(email: "admin@example.com", password: "123456", role: "admin", account: account)
+User.create(email: "yuri@example.com", password: "123456", role: "parent", account: account)
+User.create(email: "angel@example.com", password: "123456", role: "child", account: account)
+User.create(email: "david@example.com", password: "123456", role: "child", account: account)
+User.create(email: "marlene@example.com", password: "123456", role: "parent", account: account)
+User.create(email: "tete@example.com", password: "123456", role: "parent", account: account)
 
 5.times do |i|
-  user.activities.create(
+  user.account.activities.create(
     name: "Sample Activity #{i + 1}",
     description: "This is a description for Sample Activity #{i + 1}.",
     status: "draft",
